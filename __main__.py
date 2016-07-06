@@ -19,15 +19,15 @@ def title(*arg, **kwargs):
     print("="*30)
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Compress video files.")
+    parser.add_argument("ROOT", help="Where to begin the search for video files.")
+
+    args = parser.parse_args()
+    ROOT = os.path.abspath(args.ROOT)
+    if not os.path.isdir(ROOT):
+        raise(Exception("Please check the root path. %s" % ROOT))
+
     try:
-        parser = argparse.ArgumentParser(description="Compress video files.")
-        parser.add_argument("ROOT", help="Where to begin the search for video files.")
-
-        args = parser.parse_args()
-        ROOT = os.path.abspath(args.ROOT)
-        if not os.path.isdir(ROOT):
-            raise(Exception("Please check the root path. %s" % ROOT))
-
         # Collect information!
         video_files = list(search.find(ROOT, MOVIE_EXT))
         if video_files:

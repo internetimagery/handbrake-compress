@@ -4,16 +4,18 @@
 from __future__ import print_function
 import subprocess
 import os.path
-import platform
 
 # Find handbrakes executable based on OS
-OS = platform.system()
-if OS == "Windows":
-    HANDBRAKE_PATH = "C:\\Program Files\\Handbrake\\HandBrakeCLI.exe"
+possible_locations = [
+    "C:\\Program Files\\Handbrake\\HandBrakeCLI.exe", # Windows
+    "/cygdrive/c/Program Files/Handbrake/HandBrakeCLI.exe" # Cygwin
+    ]
+for location in possible_locations:
+    if os.path.isfile(location):
+        HANDBRAKE_PATH = location
+        break
 else:
     raise(Exception("Cannot find Handbrake executable."))
-if not os.path.isfile(HANDBRAKE_PATH):
-    raise(Exception("Cannot find Handbrake at %s" % HANDBRAKE_PATH))
 
 EXTENSION = ".m4v" #".mkv"
 
