@@ -20,7 +20,7 @@ def find(root, reg):
             elif reg.match(entry_path):
                 yield entry_path
 
-if __name__ == '__main__':
-    root = os.path.dirname(__file__)
-    for file_ in find(root, re.compile(r"^.+\.mov$", re.I)):
-        print(file_)
+# if __name__ == '__main__':
+#     root = os.path.dirname(__file__)
+#     for file_ in find(root, re.compile(r"^.+\.mov$", re.I)):
+#         print(file_)

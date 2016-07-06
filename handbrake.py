@@ -18,7 +18,7 @@ if not os.path.isfile(HANDBRAKE_PATH):
 EXTENSION = ".m4v" #".mkv"
 
 def compress(video_path, options = None):
-    compressed_path = "%s.%s" % (os.path.splitext(video_path)[0], EXTENSION)
+    compressed_path = os.path.splitext(video_path)[0] + EXTENSION
     # Check we are ok to make the compression
     if not os.path.isfile(video_path):
         raise(Exception("File cannot be found: %s" % video_path))
