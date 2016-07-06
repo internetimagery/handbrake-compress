@@ -15,7 +15,7 @@ else:
 if not os.path.isfile(handbrake_path):
     raise(Exception("Cannot find Handbrake at %s" % handbrake_path))
 
-def compress(video_path):
+def compress(video_path, options = None):
     compressed_path = "%s.mkv" % os.path.splitext(video_path)[0]
     # Check we are ok to make the compression
     if not os.path.isfile(video_path):
@@ -24,7 +24,15 @@ def compress(video_path):
         raise(Exception("Compressed file already exists: %s" % compressed_path))
     # Compress the file
     try:
-        print("Compressing: %s" % video_path)
+        print("COMPRESSING: %s" % video_path)
+        args = [handbrake_path,
+            "--preset", "High Profile"] #"Universal",
+        if type(options) == list:
+            args.extend(options)
+        args.extend([
+            "-i", video_path,
+            "-o", compressed_path])
+        log = subprocess.call(args)
     except:
         if os.path.isfile(compressed_path):
             os.unlink(compressed_path)
