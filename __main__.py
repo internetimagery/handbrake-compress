@@ -44,12 +44,20 @@ if __name__ == '__main__':
 
             for raw_video in video_files:
                 try:
+                    # Actually compress the video
                     compressed_video = handbrake.compress(raw_video)
                     before_size += os.path.getsize(raw_video)
                     after_size += os.path.getsize(compressed_video)
 
                     # Move original file safely to backup folder
-                    shutil.move(raw_video, complete_path)
+                    orig_location = os.path.relpath(os.path.dirname(raw_video), start=ROOT)
+                    backup_loc = complete_path
+                    for step in orig_location.split(os.path.sep):
+                        backup_loc = os.path.join(backup_loc, step)
+                        if not os.path.isdir(backup_loc):
+                            os.mkdir(backup_loc)
+                    shutil.move(raw_video, backup_loc)
+
                 except Exception:
                     errors.append(traceback.format_exc())
                     print("SKIPPED: %s" % raw_video)
@@ -59,7 +67,7 @@ if __name__ == '__main__':
                 for err in errors:
                     print(err)
             else:
-                saved = ((before_size - after_size) / before_size) * 100
+                saved = (((before_size - after_size) / before_size) * 100) if before_size else 0
                 title("Compression complete!\n%s%% space saved! Well done!" % round(saved, 2))
         else:
             print("No videos found.")
