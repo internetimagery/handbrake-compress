@@ -13,6 +13,11 @@ import re
 MOVIE_EXT = re.compile(r"^.+\.(mov|3gp)$", re.I)
 COMPLETE = ".originals" # Where to move the original videos
 
+def title(*arg, **kwargs):
+    print("="*30)
+    print(*arg, **kwargs)
+    print("="*30)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Compress video files.")
     parser.add_argument("ROOT", help="Where to begin the search for video files.")
@@ -41,23 +46,22 @@ if __name__ == '__main__':
                 compressed_video = handbrake.compress(raw_video)
                 before_size += os.path.getsize(raw_video)
                 after_size += os.path.getsize(compressed_video)
+
+                # Move original file safely to backup folder
+                shutil.move(raw_video, complete_path)
             except Exception:
                 errors.append(traceback.format_exc())
                 print("SKIPPED: %s" % raw_video)
 
-        saved = ((before_size - after_size) / before_size) * 100
-
-        print("-"*20)
-        print("Compression complete!")
-        print("%s%% space saved! Well done!" % round(saved, 2))
-
         if errors:
-            print("The following Errors occurred while processing:")
+            title("The following Errors occurred while processing:")
             for err in errors:
-                print("="*20)
                 print(err)
+        else:
+            saved = ((before_size - after_size) / before_size) * 100
+            title("Compression complete!\n%s%% space saved! Well done!" % round(saved, 2))
 
-        input("Hit enter to finish.")
+        input("Hit enter to finish...")
 
     else:
         print("No videos found.")
